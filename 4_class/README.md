@@ -247,7 +247,7 @@
    }
    
    class Person(val firstName:String,val lastName:String) {
-    companion object
+        companion object
    }
    
    fun Person.Companion.fromJSON(json:String): Person {
