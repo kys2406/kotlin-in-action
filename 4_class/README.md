@@ -177,6 +177,7 @@
 ```
 
 1. 싱글턴 정의
+   - object를 이용하여, 클래스 정의 + 객체 생성 가능 -> 싱글턴 쉽게 생성가능
    ```kotlin
    //단일 객체 생성
    object Payroll {
@@ -188,11 +189,24 @@
     }
    }
    
-   //Comparator 구현
+   //Comparator 구현(외부)
    object CaseInsensitiveFileComparator : Comparator<File> {
     override fun compare(o1: File?, o2: File?): Int {
          TODO("Not yet implemented")
     }
+   }
+   
+   data class Person(val name: String) {
+       //Comparator 구현(내부)
+        object NameComparator : Comparator {
+            override fun compare(p1: Person, p2: Person): Int =
+                p1.name.compareTo(p2.name)
+        }
+    }
+
+   fun main(args: Array<String>) {
+       val persons = listOf(Person("Bob"), Person("Alice"))
+       println(persons.sortedWith(Person.NameComparator))
    }
    ```
 
@@ -200,15 +214,44 @@
    CaseInsensitiveFileComparator.INSTANCE.compare(f1, f2);
    ```
 2. Companion Object
-    - Static Member / Method
+    - Top-Level Function을 통해 Static Method 처럼 활용 가능
+        - top-level function은 class 내부에 선언된 private property에는 접근할 수 없는 제한 
     - 확장 함수에 활용
    ```kotlin
+   //Static Method 예제
+   class A { 
+        companion object { 
+            fun bar() { 
+                println("Companion object called") 
+            } 
+        } 
+   } 
+    
+   fun main(args: Array<String>) { 
+        A.bar() 
+   }
+    
+   //Factory Pattern 예제
+   class User private constructor(val nickname: String) {
+        companion object {
+            fun newSubscribingUser(email: String) = User(email.substringBefore('@'))
+    
+            fun newFacebookUser(accountId: Int) = User(getFacebookName(accountId))
+        }
+   }
+
+   fun main(args: Array<String>) {
+        val subscribingUser = User.newSubscribingUser("bob@gmail.com")
+        val facebookUser = User.newFacebookUser(4)
+        println(subscribingUser.nickname)
+   }
+   
    class Person(val firstName:String,val lastName:String) {
     companion object
    }
    
    fun Person.Companion.fromJSON(json:String): Person {
-   //TODO
+        //TODO
    }
    
    val p = Person.fromJSON(json)
