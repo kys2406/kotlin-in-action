@@ -26,7 +26,7 @@
     - 자바와 비슷한듯 다른듯...
         - 패키지가 코틀린에서는 네임스페이스 관리를 위한 용도로만 사용되기 때문에 관련 패키지 관련 기능은 없음!!
             - ex) package-private
-            - 근데.. 거의 써본적은 없는듯..
+
         - 위 기능을 제외하고는 거의 비슷함..
     - 종류
         - public(Default)
@@ -37,7 +37,7 @@
     - 클래스 안에 클래스....
     - 중첩 클래스
         - JAVA : static class
-        - Kotlin : classL A
+        - Kotlin : class A
     - 내부 클러스
         - JAVA : class A
         - Kotlin : inner class A
@@ -79,12 +79,16 @@
         val nickname: String
    }
 
+   //PrivateUser는 주 생성자에서 override 메서드를 이용해서 부모의 property값을 처리
    class PrivateUser(override val nickname: String) : User
 
+   //SubscribeingUser는 class 내부에서 명시적으로 nickname을 override하고 custom getter를 제공
    class SubscribeingUser(val email: String) : User { 
        override val nickname: String get() = TODO("Not yet implemented")
    }
-
+   
+   //FacebookUser는 함수를 이용하여 nickname값을 설정
+   //객체 생성지 한번만 값을 구해서 backing field에 설정해 놓고 호출때마다 저장된 field을 반환
    class FacebookUser(val accountId: Int) : User { 
        override val nickname: String get() = getFacebookName(accountId)
        private fun getFacebookName(accountId: Int): String {
@@ -92,11 +96,36 @@
       }
    }
    ```
-4. Getter / Setter에서 뒷받침하는 필드에 접근
+4. Backing Field : Getter / Setter에서 뒷받침하는 필드에 접근
+    - 컴파일러에서 자동으로 생성해주는 Field -> Property에 값을 저장하기 위해 사용
     - Set Value에 확장 구현..
-
+    ```kotlin
+    class User(val name: String) { 
+        var address: String = "unspecified" 
+        set(value: String) { 
+            println(""" 
+                Address was changed for $name: 
+                "$field" -> "$value".""".trimIndent()) 
+            field = value 
+        } 
+    } 
+    
+    fun main(args: Array) { 
+        val user = User("Alice") 
+        user.address = "Elsenheimerstrasse 47, 80687 Muenchen" 
+    }
+    ```
 5. 접근자의 가시성 변경
-    - private
+    ```kotlin
+    class LengthCounter { 
+        var counter: Int = 0 
+        private set //외부에서 counter Set 불가..
+        
+        fun addWord(word: String) { 
+            counter += word.length 
+        } 
+    }
+    ```
 
 ## 컴파일러가 생성한 메소드: 데이터 클래스와 클래스 위임
 
