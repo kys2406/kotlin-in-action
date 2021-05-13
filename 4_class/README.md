@@ -264,7 +264,7 @@
     } 
     
     fun main(args: Array) { 
-        setClickAction(object : ClickListener { 
+        setClickAction(object : ClickListener {  //호출할때마다 객체 생성!!
             override fun onClick() { 
                     println("clicked!!!") 
                 } 
