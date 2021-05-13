@@ -93,7 +93,7 @@
 3. groupBy : Grouping...
 4. flatmap / flatten
     - flatmap : List<List> -> List~~~~
-    - [X] flatten
+    - [X] flatten : flatmap + collect.toList
 
 ## 시퀀스 : 지연 컬렉션 연산
    - filter / map 호출시 새로운 List 반환 
