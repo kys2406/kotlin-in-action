@@ -258,6 +258,24 @@
    ```
 3. Anonymous Object
     - 싱글턴 아님..
+    ```kotlin
+    interface ClickListener { 
+        fun onClick() 
+    } 
+    
+    fun main(args: Array) { 
+        setClickAction(object : ClickListener { 
+            override fun onClick() { 
+                    println("clicked!!!") 
+                } 
+            } 
+        ) 
+    }     
+    
+    fun setClickAction(clickListener: ClickListener) { 
+        clickListener.onClick() 
+    }
+    ```
    
 ## 결론
 
