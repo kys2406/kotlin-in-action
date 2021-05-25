@@ -6,6 +6,13 @@ println(3+4)
 
 //python println("3".__add__("4"))
 println((3).__add__(4))
+
+//Java에서 연산자 오버로딩 but 자유롭지는 않다..
+//Java에서 연산자 오버로딩을 지원하지 않는 이유
+//https://blogs.oracle.com/javamagazine/is-it-time-for-overloading-in-java
+1+2
+String str = "abc"
+str + "def" //abcdef 
 ```
 
 ## 산술 연산자 오버로딩
