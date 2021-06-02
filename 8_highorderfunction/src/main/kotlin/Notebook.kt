@@ -1,7 +1,5 @@
 import java.util.*
 import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock
 
 fun main() {
     val sum = { x: Int, y: Int -> x + y }
@@ -23,11 +21,32 @@ fun main() {
     val calculator = getShippingCostCalculator(Delivery.EXPEDITED)
     println("Shipping costs ${calculator(Order(3))}")
 
+    lookForAlice(people)
+
     println(averageWindowsDuration)
-
     println(log2.averageDurationFor(OS.WINDOWS))
-
     println(log2.averageDurationFor(OS.MAC))
+
+    println(StringBuilder().apply sb@ {
+        listOf (1,2,3).apply {
+            // this로 reciever object(listOf)에 접근하고 @sb로 다시 StringBuilder에 접근했다.
+            this@sb.append(this.toString())
+        }
+    })
+}
+
+data class Person(val name: String, val age: Int)
+
+val people = listOf(Person("Alice", 29), Person("Bob", 31))
+
+fun lookForAlice(people: List<Person>) {
+    people.forEach label@{
+        if (it.name == "Alice") {
+            println("Alice")
+            return@label
+        }
+    }
+    println("Alice might be somewhere")
 }
 
 inline fun <T> synchronized(lock: Lock, action: () -> T): T {

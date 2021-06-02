@@ -173,10 +173,100 @@ inline fun String.filter(predicate: (Char) -> Boolean): String {
     }
     ```
 
-2. 
+2. 제약사항
+    - inline으로 사용하려는 함수가 수신된 함수타입 인자를 바로 실행하지 않고, 다른 변수에 저장하고 나중에 그 변수를 사용하는경우에는 inline 함수로 만들 수 없음
+    - 함수의 인자로 여러개의 함수타입을 받을때 특정 람다만 inline을 하고 싶지 않다면 noinline 키워드를 붙이면 됨
 
-## 결론
+3. Collection 연산의 Inlining
+    - Collection 함수 의 대부분은 람다를 인자로 받음
+      ```kotlin
+      data class Person(val name: String, val age: Int)
+   
+      val people = listOf(Person("Alice", 29), Person("Bob", 31))
+   
+      fun main(args: Array) {
+         //filter, map
+         println(people.filter { it.age > 30 }.map(Person::name))
+      }
+      ```
+    - 전체 Indexing과 비용에서 차이는 없지만, 중간 연산 결과를 내어 높기 때문에, 결과 생성에 대한 비용이 발생
+    - asSequence()를 이용하면 생성 비용을 아낄수 있음 -> 람다 inline X -> 원소가 많을 때 사용하면 좋음!!
 
-```markdown
-자유로운 연산자 오버로딩 및 다양한 컨벤션의 확장 -> 자율성 보장함!!
+4. inline으로 선언이 필요한 경우
+    - 람다를 인자로 사용하는 함수에 사용
+        - 일반함수의 경우, 컴파일러 단에서 inline을 강력하게 지원하지만, 람다의 경우에는 그렇지 못함 -> 객체 생성 비용을 줄
+
+5. Resource 자동 관리
+    - Java7부터 지원하는 try-with-resource 사용불가ㅠㅠ(1.6 호환....)
+    - use 함수 제공 -> close안해도 됨...
+   ```kotlin
+   fun readFirstLineFromFile(path: String): String {
+      BufferedReader(FileReader(path)).use { br -> 
+         return br.readLine()
+      }
+   }
+   ```
+
+## 고차함수 흐름 제어
+
+1. 내부 return
+
+```kotlin
+data class Person(val name: String, val age: Int)
+
+val people = listOf(Person("Alice", 29), Person("Bob", 31))
+
+fun lookForAlice(people: List<Person>) {
+    people.forEach {
+        if (it.name == "Alice") {
+            println("Found!")  // "Found!" 출력 -> non-local return..
+            return
+        }
+    }
+    println("Alice is not found")
+}
+
+fun main(args: Array) {
+    lookForAlice(people)
+}
+```
+
+2. label을 활용한 local return
+
+```kotlin
+fun lookForAlice(people: List<Person>) {
+    people.forEach label@{
+        if (it.name == "Alice") {
+            println("Alice")
+            return@label
+        }
+    }
+    println("Alice might be somewhere")
+}
+
+println(StringBuilder().apply sb@{
+    listOf(1, 2, 3).apply {
+        // this로 reciever object(listOf)에 접근하고 @sb로 다시 StringBuilder에 접근했다.
+        this@sb.append(this.toString())
+    }
+})
+```
+
+3. 무명함수의 return
+
+```kotlin
+data class Person(val name: String, val age: Int)
+
+val people = listOf(Person("Alice", 29), Person("Bob", 31))
+
+fun lookForAlice(people: List<Person>) {
+    people.forEach(fun(person) {
+        if (person.name == "Alice") return
+        println("${person.name} is not Alice")
+    })
+}
+
+fun main(args: Array<String>) {
+    lookForAlice(people)
+}
 ```
