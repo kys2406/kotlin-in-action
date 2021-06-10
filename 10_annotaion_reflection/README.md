@@ -154,11 +154,11 @@
 - DSL : 선언적(declarative)
     - 결과에 필요한 내용만 기술하고, 실제 세부 실행은 엔진에 맡김
 
-Internal DSL
-- 범용 언어로 작성된 프로그래밍의 일부이며 범용 언어와 동일한 문법을 사용하여, DSL 역할 및 객체의 매핑 작업 등을 자동으로 처리
-- Mybatis / Hibernate / JPA / Exposed 기타등등
+1. Internal DSL
+	- 범용 언어로 작성된 프로그래밍의 일부이며 범용 언어와 동일한 문법을 사용하여, DSL 역할 및 객체의 매핑 작업 등을 자동으로 처리
+	- Mybatis / Hibernate / JPA / Exposed 기타등등
 
-Invoke Convenstion
+2. Invoke Convenstion
 ```kotlin
 class Greeter(val greeting: String) {
     operator fun invoke(name: String) {
