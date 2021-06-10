@@ -158,7 +158,7 @@
 	- 범용 언어로 작성된 프로그래밍의 일부이며 범용 언어와 동일한 문법을 사용하여, DSL 역할 및 객체의 매핑 작업 등을 자동으로 처리
 	- Mybatis / Hibernate / JPA / Exposed 기타등등
 
-2. Invoke Convenstion
+2. Invoke Convention
 ```kotlin
 class Greeter(val greeting: String) {
     operator fun invoke(name: String) {
